@@ -79,7 +79,7 @@ class Iris implements Runnable {
     var predictOp = new PredictOperator<>(float[], float[])
 
     /* map to label */
-    var bestFitOp = new MapOperator<>((array) -> array.toList().withIndex().max { it.v1 }.v2, float[], Integer)
+    var bestFitOp = new MapOperator<>((array) -> array.indexed().max { it.value }.key, float[], Integer)
 
     /* sink */
     var predicted = []

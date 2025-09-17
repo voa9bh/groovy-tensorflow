@@ -53,7 +53,7 @@ repositories {
 def wayangVersion = '1.1.0'
 def hadoopVersion = '3.4.1'
 def slf4jVersion = '2.0.17'
-def groovyVersion = '4.0.22'
+def groovyVersion = '5.0.0'
 
 dependencies {
   implementation "org.apache.groovy:groovy:$groovyVersion"
