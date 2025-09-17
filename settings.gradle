@@ -1,0 +1,31 @@
+pluginManagement {
+  repositories {
+    maven {
+      credentials {
+        username "$rbArtifactoryUser"
+        password "$rbArtifactoryPassword"
+      }
+      url "https://rb-artifactory.bosch.com/artifactory/maven-central-remote/"
+    }
+
+    maven {
+      credentials {
+        username "$rbArtifactoryUser"
+        password "$rbArtifactoryPassword"
+      }
+      url "https://rb-artifactory.bosch.com/artifactory/gradle-plugins-remote-cache/"
+    }
+
+    maven {
+      credentials {
+        username "$rbArtifactoryUser"
+        password "$rbArtifactoryPassword"
+      }
+      url = "https://rb-artifactory.bosch.com/artifactory/cnthub-eatdev-maven-local/"
+    }
+
+    mavenLocal()
+  }
+}
+
+rootProject.name = 'groovy-tensorflow'

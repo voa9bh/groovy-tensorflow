@@ -1,0 +1,98 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+  id 'com.github.ben-manes.versions' version '0.52.0'
+  id 'groovy'
+  id 'application'
+}
+
+repositories {
+  maven {
+    credentials {
+      username "$rbArtifactoryUser"
+      password "$rbArtifactoryPassword"
+    }
+    url "https://rb-artifactory.bosch.com/artifactory/maven-central-remote/"
+  }
+
+  maven {
+    credentials {
+      username "$rbArtifactoryUser"
+      password "$rbArtifactoryPassword"
+    }
+    url "https://rb-artifactory.bosch.com/artifactory/maven-central-remote-cache/"
+  }
+
+  maven {
+    credentials {
+      username "$rbArtifactoryUser"
+      password "$rbArtifactoryPassword"
+    }
+    url "https://rb-artifactory.bosch.com/artifactory/bhp-eat-spexjava-local/"
+  }
+}
+
+def wayangVersion = '1.1.0'
+def hadoopVersion = '3.4.1'
+def slf4jVersion = '2.0.17'
+def groovyVersion = '4.0.22'
+
+dependencies {
+  implementation "org.apache.groovy:groovy:$groovyVersion"
+  implementation "org.apache.wayang:wayang-java:$wayangVersion"
+  implementation "org.apache.wayang:wayang-tensorflow:$wayangVersion"
+  runtimeOnly "org.slf4j:slf4j-simple:$slf4jVersion"
+  runtimeOnly 'org.apache.commons:commons-configuration2:2.10.1'
+  runtimeOnly 'com.fasterxml.woodstox:woodstox-core:6.6.2'
+  runtimeOnly 'com.google.re2j:re2j:1.7'
+  if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    runtimeOnly 'org.tensorflow:tensorflow-core-native:1.0.0:windows-x86_64'
+  } else if (Os.isFamily(Os.FAMILY_MAC)) {
+    runtimeOnly 'org.tensorflow:tensorflow-core-native:1.0.0:macosx-arm64'
+  } else if (Os.isFamily(Os.FAMILY_UNIX)) {
+    runtimeOnly 'org.tensorflow:tensorflow-core-native:1.0.0:linux-x86_64'
+  }
+
+  runtimeOnly("org.apache.hadoop:hadoop-common:$hadoopVersion") {
+    transitive = false
+  }
+  runtimeOnly("org.apache.hadoop:hadoop-hdfs:$hadoopVersion") {
+    transitive = false
+  }
+}
+
+application {
+  mainClass = 'Iris'
+}
+
+tasks.register('runApp', JavaExec) {
+  group = "run"
+  description = "Runs iris application."
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  mainClass = application.mainClass
+
+  workingDir = "${projectDir}/test/data"
+
+  // arguments to pass to the application
+  args = []
+}
